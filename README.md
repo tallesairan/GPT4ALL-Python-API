@@ -12,6 +12,7 @@ GPT4ALL-Python-API is an API for the GPT4ALL project. It provides an interface t
   - The model is loaded once and then reused.
   - The model can be set through the environment variable `DEFAULT_MODEL` in the dotenv file.
   - The model can be set through the `model` field in the request body or in the OpenAI library.
+  - reload model instance over reload field in request
 - Implemented the prompt_template, prompt_batch_size, and repeat_last_n via API.
 - Methods included in the default API of gpt4all GUI.
 
@@ -98,6 +99,7 @@ The request to the `/v1/completions` endpoint should include the following param
 - `repeat_penality` (optional): The repetition penalty for the generated text. Default value is 1.18.
 - `repeat_last_n` (optional): The number of tokens to consider for the repetition penalty. Default value is 64.
 - `echo` (optional): Flag indicating whether to echo the prompt in the response. Default value is `False`.
+- `reload` (optional): Flag indicating that the model must be loaded again thus eliminating the possible history. Default value is `False`.
 - `prompt_template` (optional): The template to use for the prompt. If not provided, a default template will be used.
 
 Example Request Body for text rewrite:

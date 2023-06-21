@@ -17,7 +17,7 @@ if os.name != 'nt':
 else:
     model_path = "{0}/AppData/Local/nomic.ai/GPT4All".format(home_directory)
 print("Model path: ", model_path)
-default_model = os.getenv("DEFAULT_MODEL", "ggml-nous-gpt4-vicuna-13b")
+default_model = os.getenv("DEFAULT_MODEL", "nous-hermes-13b.ggmlv3.q4_0")
 model_instance = GPT4All(default_model, model_path=model_path)
 
 
@@ -42,6 +42,7 @@ def chat_by_payload(payload):
 
 def generate_text_by_payload(payload):
     global model_instance
+    global default_model
     start_time = time.time()
 
     payload_arguments = extract_arguments_from_json(payload)
@@ -68,6 +69,8 @@ def generate_text_by_payload(payload):
     if model != default_model:
         # load model if model provided in payload is different from default model
         model_instance = GPT4All(model, model_path=model_path)
+        # change the name of the default model to prevent the model from being loaded again on the next request
+        default_model = model
 
     max_tokens = 16
     if "max_tokens" in payload_arguments:
@@ -88,6 +91,11 @@ def generate_text_by_payload(payload):
     top_k = 40
     if "top_k" in payload_arguments:
         top_k = payload_arguments["top_k"]
+
+    # reloads model if true
+    reload = False
+    if "reload" in payload_arguments:
+        reload = payload_arguments["reload"]
     # not implemented
     n = 1
     if "n" in payload_arguments:
@@ -110,6 +118,11 @@ def generate_text_by_payload(payload):
     if "echo" in payload_arguments:
         echo = payload_arguments["echo"]
 
+
+
+    # reloads model if reload is true
+    if reload:
+        model_instance = GPT4All(model, model_path=model_path)
     prompt_template = ("\n"
                        "### Instruction\n"
                        "Paraphrase the text below by expanding the words based on the subject\n"
