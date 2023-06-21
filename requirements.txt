@@ -1,0 +1,4 @@
+uvicorn
+gpt4all
+python-dotenv
+fastapi
