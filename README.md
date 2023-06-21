@@ -6,6 +6,15 @@
 
 GPT4ALL-Python-API is an API for the GPT4ALL project. It provides an interface to interact with GPT4ALL models using Python.
 
+### Features
+- Possibility to list and download new models, saving them in the default directory of gpt4all GUI.
+- Possibility to set a default model when initializing the class.
+  - The model is loaded once and then reused.
+  - The model can be set through the environment variable `DEFAULT_MODEL` in the dotenv file.
+  - The model can be set through the `model` field in the request body or in the OpenAI library.
+- Implemented the prompt_template, prompt_batch_size, and repeat_last_n via API.
+- Methods included in the default API of gpt4all GUI.
+
 ### Requirements
 
 - Python 3.8
@@ -204,7 +213,44 @@ This endpoint retrieves or downloads a specific model.
   ```
 
 
+### OpenAPI Wrapper Example
 
+Example of usage with the OpenAPI library to create queries.
+
+
+```python
+
+import openai
+
+# your uvicorn server addr, default is http://localhost:8000
+openai.api_base = "http://localhost:8000/v1"
+#openai.api_base = "https://api.openai.com/v1"
+
+openai.api_key = "not needed for a local LLM"
+
+# Set up the prompt and other parameters for the API request
+prompt = "Who is Michael Jordan?"
+
+# model = "gpt-3.5-turbo"
+#model = "mpt-7b-chat"
+model = "gpt4all-j-v1.3-groovy"
+
+# Make the API request
+response = openai.Completion.create(
+    model=model,
+    prompt=prompt,
+    max_tokens=50,
+    temperature=0.28,
+    top_p=0.95,
+    n=1,
+    echo=True,
+    stream=False
+)
+
+# Print the generated completion
+print(response)
+
+```
 ### Development Environment
 
 We recommend using PyCharm to set up and manage your development environment. It provides an integrated development environment with powerful tools for Python development.
